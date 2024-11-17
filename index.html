@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор бассейна</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        async function calculateCost() {
+            const pool_price = parseFloat(document.getElementById('pool_price').value);
+            const installation_cost = parseFloat(document.getElementById('installation_cost').value);
+            const annual_maintenance_cost = parseFloat(document.getElementById('annual_maintenance_cost').value);
+            const years = parseInt(document.getElementById('years').value);
+            const additional_components_cost = parseFloat(document.getElementById('additional_components_cost').value);
+
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    pool_price, installation_cost, annual_maintenance_cost, years, additional_components_cost
+                })
+            });
+
+            const result = await response.json();
+            document.getElementById('total_cost').innerText = `Общая стоимость: ${result.total_cost} рублей`;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор бассейна</h1>
+        <form onsubmit="event.preventDefault(); calculateCost();">
+            <label for="pool_price">Стоимость бассейна:</label>
+            <input type="number" id="pool_price" name="pool_price" step="0.01" required><br>
+            <label for="installation_cost">Стоимость установки:</label>
+            <input type="number" id="installation_cost" name="installation_cost" step="0.01" required><br>
+            <label for="annual_maintenance_cost">Годовые расходы на содержание:</label>
+            <input type="number" id="annual_maintenance_cost" name="annual_maintenance_cost" step="0.01" required><br>
+            <label for="years">Количество лет:</label>
+            <input type="number" id="years" name="years" required><br>
+            <label for="additional_components_cost">Дополнительные компоненты:</label>
+            <input type="number" id="additional_components_cost" name="additional_components_cost" step="0.01" required><br>
+            <button type="submit">Рассчитать</button>
+        </form>
+        <h2 id="total_cost">Общая стоимость: </h2>
+    </div>
+</body>
+</html>
